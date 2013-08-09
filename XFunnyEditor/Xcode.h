@@ -13,3 +13,9 @@
 
 @interface DVTSourceTextView : DVTCompletingTextView
 @end
+
+@interface DVTSourceTextScrollView : NSScrollView
+@end
+
+@interface DVTTextSidebarView : NSRulerView
+@end
