@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>3D6AE1D2-291E-452A-8F1E-3954E8B5F6DF</string>
+	<key>IDESourceControlProjectName</key>
+	<string>XFunnyEditor</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>D3A130D5-1B91-45BA-870A-7B744253123F</key>
+		<string>ssh://github.com/STAR-ZERO/XFunnyEditor.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>XFunnyEditor.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>D3A130D5-1B91-45BA-870A-7B744253123F</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>ssh://github.com/STAR-ZERO/XFunnyEditor.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>D3A130D5-1B91-45BA-870A-7B744253123F</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>D3A130D5-1B91-45BA-870A-7B744253123F</string>
+			<key>IDESourceControlWCCName</key>
+			<string>XFunnyEditor</string>
+		</dict>
+	</array>
+</dict>
+</plist>
