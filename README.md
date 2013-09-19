@@ -10,6 +10,12 @@ Build the XFunnyEditor target in the Xcode project and the plugin will automatic
 
 Select `XFunnyEditor` from `Edit` menu and select image file
 
+### Note
+
+```
+Please use the Xcode5Support branch If you want to use the Xcode5
+```
+
 ## Uninstall
 
 Delete the following directory: `~/Library/Application Support/Developer/Shared/Xcode/Plug-ins/XFunnyEditor.xcplugin`.
