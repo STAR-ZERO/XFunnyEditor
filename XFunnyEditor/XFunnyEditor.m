@@ -17,6 +17,8 @@
 {
     NSImage *_image;
     NSRect _sidebarRect;
+    DVTSourceTextView *_currentTextView;
+    NSColor *_originalColor;
 }
 
 NSString * const kUserDefaultsKeyImagePath = @"XFunnyEditoryImagePath";
@@ -36,18 +38,25 @@ NSString * const kUserDefaultsKeyImagePath = @"XFunnyEditoryImagePath";
     if (self = [super init]) {
         // Create menu items, initialize UI, etc.
 
+        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+        NSString *imagePath = [userDefaults objectForKey:kUserDefaultsKeyImagePath];
+
         // Sample Menu Item:
         NSMenuItem *menuItem = [[NSApp mainMenu] itemWithTitle:@"Edit"];
         if (menuItem) {
             [[menuItem submenu] addItem:[NSMenuItem separatorItem]];
             NSMenuItem *actionMenuItem = [[NSMenuItem alloc] initWithTitle:@"XFunnyEditor" action:@selector(doMenuAction:) keyEquivalent:@""];
             [actionMenuItem setTarget:self];
+
+            if (imagePath) {
+                [actionMenuItem setState:NSOnState];
+            } else {
+                [actionMenuItem setState:NSOffState];
+            }
+
             [[menuItem submenu] addItem:actionMenuItem];
             [actionMenuItem release];
         }
-
-        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-        NSString *imagePath = [userDefaults objectForKey:kUserDefaultsKeyImagePath];
 
         if (imagePath) {
             NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -75,6 +84,13 @@ NSString * const kUserDefaultsKeyImagePath = @"XFunnyEditoryImagePath";
 
 - (void)viewFrameDidChangeNotification:(NSNotification *)notification
 {
+    // keep current data
+    if ([[notification object] isKindOfClass:[DVTSourceTextView class]]) {
+        _currentTextView = (DVTSourceTextView *)[notification object];
+    } else if ([[notification object] isKindOfClass:[DVTTextSidebarView class]]) {
+        _sidebarRect = ((DVTTextSidebarView *)[notification object]).frame;
+    }
+
     if (_image == nil) {
         return;
     }
@@ -97,6 +113,7 @@ NSString * const kUserDefaultsKeyImagePath = @"XFunnyEditoryImagePath";
 
             // create ImageView
             NSColor *color = [textView backgroundColor];
+            _originalColor = color;
             [scrollView setDrawsBackground:NO];
             [textView setBackgroundColor:[NSColor clearColor]];
 
@@ -116,10 +133,6 @@ NSString * const kUserDefaultsKeyImagePath = @"XFunnyEditoryImagePath";
             [imageView setFrame:[self getImageViewFrame:scrollView]];
         }
 
-    } else if ([[notification object] isKindOfClass:[DVTTextSidebarView class]]) {
-        // get sidebar size
-        DVTTextSidebarView *sidebarView = [notification object];
-        _sidebarRect = sidebarView.frame;
     }
 }
 
@@ -141,11 +154,38 @@ NSString * const kUserDefaultsKeyImagePath = @"XFunnyEditoryImagePath";
                       _sidebarRect.size.height);
 }
 
-// Sample Action, for menu item:
+// menu action
 - (void)doMenuAction:(id)sender
 {
     NSMenuItem *menuItem = (NSMenuItem *)sender;
+    if ([menuItem state] == NSOnState){
+        [self disableBackgroundImage:menuItem];
+    } else {
+        [self enableBackgroundImage:menuItem];
+    }
+}
 
+// disable background image
+- (void)disableBackgroundImage:(NSMenuItem *)menuItem
+{
+    DVTSourceTextScrollView *scrollView = (DVTSourceTextScrollView *)[_currentTextView enclosingScrollView];
+    NSView *view = [scrollView superview];
+    XFunnyImageView *imageView = [self getImageView:view];
+    if (imageView) {
+        // remove image
+        [_currentTextView setBackgroundColor:_originalColor];
+        [imageView removeFromSuperview];
+    }
+
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults removeObjectForKey:kUserDefaultsKeyImagePath];
+    _image = nil;
+    [menuItem setState:NSOffState];
+}
+
+// selection image file
+- (void)enableBackgroundImage:(NSMenuItem *)menuItem
+{
     NSOpenPanel *openPanel = [NSOpenPanel openPanel];
     NSArray *fileTypes = [[NSArray alloc] initWithObjects:@"png", @"jpg", @"jpeg", nil];
 
@@ -162,13 +202,23 @@ NSString * const kUserDefaultsKeyImagePath = @"XFunnyEditoryImagePath";
             [userDefaults synchronize];
             
             _image = [[NSImage alloc] initWithContentsOfFile:imagePath];
+
+            if (_currentTextView) {
+                // post notification
+                [[NSNotificationCenter defaultCenter] postNotificationName:NSViewFrameDidChangeNotification object:_currentTextView];
+            }
+
+            [menuItem setState:NSOnState];
+
         }
     }];
+
 }
 
 - (void)dealloc
 {
     [_image release];
+    [_currentTextView release];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [super dealloc];
 }
