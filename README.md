@@ -10,19 +10,17 @@ Build the XFunnyEditor target in the Xcode project and the plugin will automatic
 
 Select `XFunnyEditor` from `Edit` menu and select image file
 
-### Note
-
-```
-Please use the Xcode5Support branch If you want to use the Xcode5
-```
-
 ## Uninstall
 
 Delete the following directory: `~/Library/Application Support/Developer/Shared/Xcode/Plug-ins/XFunnyEditor.xcplugin`.
 
 ## Support version
 
-This plugin is developed in MaxOS 10.8 and Xcode 4.6
+This plugin is developed in MaxOS 10.8 and Xcode 5.0
+
+## Known Issues
+
+To the strange behavior when used in conjunction with XVim
 
 ## License
 
