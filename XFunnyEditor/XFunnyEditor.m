@@ -121,6 +121,7 @@ NSString * const kUserDefaultsKeyImageOpcity = @"XFunnyEditoryImageOpacity";
             if (imageView) {
                 // exist image
                 [self setFrameImageView:imageView backgroundView:backgroundView scrollView:scrollView];
+                [imageView setImage:_image];
                 return;
             }
 
