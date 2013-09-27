@@ -8,7 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		BA53B91717A37C290065862C /* DVTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BA53B91617A37C290065862C /* DVTKit.framework */; };
-		BA912D1717A4B50C007757F6 /* XFunnyImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = BA912D1617A4B50C007757F6 /* XFunnyImageView.m */; };
+		BA7A2A2D17F420F5007052DD /* XFunnyBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = BA7A2A2C17F420F5007052DD /* XFunnyBackgroundView.m */; };
+		BA8A874F17F40AAF00A20250 /* PreferenceWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = BA8A874D17F40AAF00A20250 /* PreferenceWindowController.m */; };
+		BA8A875017F40AAF00A20250 /* PreferenceWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BA8A874E17F40AAF00A20250 /* PreferenceWindowController.xib */; };
 		BAAC24C217A3755800C31251 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BAAC24C117A3755800C31251 /* AppKit.framework */; };
 		BAAC24C417A3755800C31251 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BAAC24C317A3755800C31251 /* Foundation.framework */; };
 		BAAC24CA17A3755800C31251 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = BAAC24C817A3755800C31251 /* InfoPlist.strings */; };
@@ -18,8 +20,11 @@
 /* Begin PBXFileReference section */
 		BA53B91217A37AD40065862C /* Xcode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Xcode.h; sourceTree = "<group>"; };
 		BA53B91617A37C290065862C /* DVTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DVTKit.framework; path = /Applications/Xcode.app/Contents/SharedFrameworks/DVTKit.framework; sourceTree = "<absolute>"; };
-		BA912D1517A4B50C007757F6 /* XFunnyImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XFunnyImageView.h; sourceTree = "<group>"; };
-		BA912D1617A4B50C007757F6 /* XFunnyImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XFunnyImageView.m; sourceTree = "<group>"; };
+		BA7A2A2B17F420F5007052DD /* XFunnyBackgroundView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XFunnyBackgroundView.h; sourceTree = "<group>"; };
+		BA7A2A2C17F420F5007052DD /* XFunnyBackgroundView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XFunnyBackgroundView.m; sourceTree = "<group>"; };
+		BA8A874C17F40AAF00A20250 /* PreferenceWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferenceWindowController.h; sourceTree = "<group>"; };
+		BA8A874D17F40AAF00A20250 /* PreferenceWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreferenceWindowController.m; sourceTree = "<group>"; };
+		BA8A874E17F40AAF00A20250 /* PreferenceWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PreferenceWindowController.xib; sourceTree = "<group>"; };
 		BAAC24BE17A3755800C31251 /* XFunnyEditor.xcplugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XFunnyEditor.xcplugin; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAAC24C117A3755800C31251 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		BAAC24C317A3755800C31251 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -76,8 +81,11 @@
 			children = (
 				BAAC24CB17A3755800C31251 /* XFunnyEditor.h */,
 				BAAC24CC17A3755800C31251 /* XFunnyEditor.m */,
-				BA912D1517A4B50C007757F6 /* XFunnyImageView.h */,
-				BA912D1617A4B50C007757F6 /* XFunnyImageView.m */,
+				BA7A2A2B17F420F5007052DD /* XFunnyBackgroundView.h */,
+				BA7A2A2C17F420F5007052DD /* XFunnyBackgroundView.m */,
+				BA8A874C17F40AAF00A20250 /* PreferenceWindowController.h */,
+				BA8A874D17F40AAF00A20250 /* PreferenceWindowController.m */,
+				BA8A874E17F40AAF00A20250 /* PreferenceWindowController.xib */,
 				BA53B91217A37AD40065862C /* Xcode.h */,
 				BAAC24C617A3755800C31251 /* Supporting Files */,
 			);
@@ -145,6 +153,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BA8A875017F40AAF00A20250 /* PreferenceWindowController.xib in Resources */,
 				BAAC24CA17A3755800C31251 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -157,7 +166,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				BAAC24CD17A3755800C31251 /* XFunnyEditor.m in Sources */,
-				BA912D1717A4B50C007757F6 /* XFunnyImageView.m in Sources */,
+				BA7A2A2D17F420F5007052DD /* XFunnyBackgroundView.m in Sources */,
+				BA8A874F17F40AAF00A20250 /* PreferenceWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

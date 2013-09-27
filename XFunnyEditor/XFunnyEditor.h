@@ -8,8 +8,9 @@
 
 #import <AppKit/AppKit.h>
 #import "Xcode.h"
-#import "XFunnyImageView.h"
+#import "XFunnyBackgroundView.h"
+#import "PreferenceWindowController.h"
 
-@interface XFunnyEditor : NSObject
+@interface XFunnyEditor : NSObject<PreferenceDelegate>
 @end
 

@@ -9,19 +9,22 @@
 #import "XFunnyEditor.h"
 
 @interface XFunnyEditor()
-- (XFunnyImageView *)getImageView:(NSView *)parentView;
-- (NSRect)getImageViewFrame:(NSView *)scrollView;
 @end
 
 @implementation XFunnyEditor
 {
+    PreferenceWindowController *_preferenceWindow;
     NSImage *_image;
+    NSUInteger _position;
+    float _opacity;
     NSRect _sidebarRect;
     DVTSourceTextView *_currentTextView;
     NSColor *_originalColor;
 }
 
 NSString * const kUserDefaultsKeyImagePath = @"XFunnyEditoryImagePath";
+NSString * const kUserDefaultsKeyImagePosition = @"XFunnyEditoryImagePosition";
+NSString * const kUserDefaultsKeyImageOpcity = @"XFunnyEditoryImageOpacity";
 
 + (void)pluginDidLoad:(NSBundle *)plugin
 {
@@ -36,11 +39,26 @@ NSString * const kUserDefaultsKeyImagePath = @"XFunnyEditoryImagePath";
 - (id)init
 {
     if (self = [super init]) {
-        // Create menu items, initialize UI, etc.
 
         NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         NSString *imagePath = [userDefaults objectForKey:kUserDefaultsKeyImagePath];
-
+        
+        if (imagePath) {
+            NSFileManager *fileManager = [NSFileManager defaultManager];
+            if ([fileManager fileExistsAtPath:imagePath]) {
+                _image = [[NSImage alloc] initWithContentsOfFile:imagePath];
+            } else {
+                [self removeUserDefaults];
+            }
+        }
+        
+        _position = [userDefaults integerForKey:kUserDefaultsKeyImagePosition];
+        _opacity = [userDefaults floatForKey:kUserDefaultsKeyImageOpcity];
+        
+        if (_opacity == 0) {
+            _opacity = 1;
+        }
+        
         // Sample Menu Item:
         NSMenuItem *menuItem = [[NSApp mainMenu] itemWithTitle:@"Edit"];
         if (menuItem) {
@@ -48,7 +66,7 @@ NSString * const kUserDefaultsKeyImagePath = @"XFunnyEditoryImagePath";
             NSMenuItem *actionMenuItem = [[NSMenuItem alloc] initWithTitle:@"XFunnyEditor" action:@selector(doMenuAction:) keyEquivalent:@""];
             [actionMenuItem setTarget:self];
 
-            if (imagePath) {
+            if (_image) {
                 [actionMenuItem setState:NSOnState];
             } else {
                 [actionMenuItem setState:NSOffState];
@@ -58,12 +76,6 @@ NSString * const kUserDefaultsKeyImagePath = @"XFunnyEditoryImagePath";
             [actionMenuItem release];
         }
 
-        if (imagePath) {
-            NSFileManager *fileManager = [NSFileManager defaultManager];
-            if ([fileManager fileExistsAtPath:imagePath]) {
-                _image = [[NSImage alloc] initWithContentsOfFile:imagePath];
-            }
-        }
 
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(applicationDidFinishLaunching:)
@@ -84,7 +96,7 @@ NSString * const kUserDefaultsKeyImagePath = @"XFunnyEditoryImagePath";
 
 - (void)viewFrameDidChangeNotification:(NSNotification *)notification
 {
-    // keep current data
+    // keep current object
     if ([[notification object] isKindOfClass:[DVTSourceTextView class]]) {
         _currentTextView = (DVTSourceTextView *)[notification object];
     } else if ([[notification object] isKindOfClass:[DVTTextSidebarView class]]) {
@@ -104,23 +116,29 @@ NSString * const kUserDefaultsKeyImagePath = @"XFunnyEditoryImagePath";
                 return;
             }
 
-            XFunnyImageView *imageView = [self getImageView:view];
+            NSImageView *imageView = [self getImageViewFromParentView:view];
+            XFunnyBackgroundView *backgroundView = [self getBackgroundViewFromaParentView:view];
             if (imageView) {
                 // exist image
-                [imageView setFrame:[self getImageViewFrame:scrollView]];
+                [self setFrameImageView:imageView backgroundView:backgroundView scrollView:scrollView];
                 return;
             }
 
-            // create ImageView
             NSColor *color = [textView backgroundColor];
             _originalColor = color;
             [scrollView setDrawsBackground:NO];
             [textView setBackgroundColor:[NSColor clearColor]];
 
-            imageView = [[[XFunnyImageView alloc] initWithFrame:[self getImageViewFrame:scrollView] backgroundColor:color] autorelease];
+            // create ImageView
+            imageView = [[[NSImageView alloc] initWithFrame:[self getImageViewFrame:scrollView]] autorelease];
+            
+            backgroundView = [[[XFunnyBackgroundView alloc] initWithFrame:[self getImageViewFrame:scrollView] color:color] autorelease];
 
             [imageView setImage:_image];
+            imageView.alphaValue = _opacity;
+            imageView.imageAlignment = _position;
             [view addSubview:imageView positioned:NSWindowBelow relativeTo:nil];
+            [view addSubview:backgroundView positioned:NSWindowBelow relativeTo:nil];
         }
 
     } else if ([[notification object] isKindOfClass:[DVTSourceTextScrollView class]]) {
@@ -128,19 +146,41 @@ NSString * const kUserDefaultsKeyImagePath = @"XFunnyEditoryImagePath";
         DVTSourceTextScrollView *scrollView = [notification object];
         NSView *view = [scrollView superview];
 
-        XFunnyImageView *imageView = [self getImageView:view];
-        if (imageView) {
-            [imageView setFrame:[self getImageViewFrame:scrollView]];
-        }
+        NSImageView *imageView = [self getImageViewFromParentView:view];
+        XFunnyBackgroundView *backgroundView = [self getBackgroundViewFromaParentView:view];
 
+        // set frame
+        [self setFrameImageView:imageView backgroundView:backgroundView scrollView:scrollView];
     }
 }
 
-- (XFunnyImageView *)getImageView:(NSView *)parentView
+- (NSImageView *)getImageViewFromParentView:(NSView *)parentView
 {
     for (NSView *subView in [parentView subviews]) {
         if ([subView isKindOfClass:[NSImageView class]]) {
-            return (XFunnyImageView *) subView;
+            return (NSImageView *) subView;
+        }
+    }
+    return nil;
+}
+
+- (NSImageView *)getImageViewFromTextView
+{
+    
+    DVTSourceTextScrollView *scrollView = (DVTSourceTextScrollView *)[_currentTextView enclosingScrollView];
+    NSView *view = [scrollView superview];
+    if (view) {
+        return [self getImageViewFromParentView:view];
+    }
+    
+    return nil;
+}
+
+- (XFunnyBackgroundView *)getBackgroundViewFromaParentView:(NSView *)parentView
+{
+    for (NSView *subView in [parentView subviews]) {
+        if ([subView isKindOfClass:[XFunnyBackgroundView class]]) {
+            return (XFunnyBackgroundView *) subView;
         }
     }
     return nil;
@@ -152,6 +192,14 @@ NSString * const kUserDefaultsKeyImagePath = @"XFunnyEditoryImagePath";
                       0,
                       scrollView.bounds.size.width - _sidebarRect.size.width,
                       _sidebarRect.size.height);
+}
+
+- (void)setFrameImageView:(NSImageView *)imageView backgroundView:(XFunnyBackgroundView *)backgroundView scrollView:(DVTSourceTextScrollView *)scrollView
+{
+    if (imageView && backgroundView) {
+        [imageView setFrame:[self getImageViewFrame:scrollView]];
+        [backgroundView setFrame:[self getImageViewFrame:scrollView]];
+    }
 }
 
 // menu action
@@ -170,49 +218,90 @@ NSString * const kUserDefaultsKeyImagePath = @"XFunnyEditoryImagePath";
 {
     DVTSourceTextScrollView *scrollView = (DVTSourceTextScrollView *)[_currentTextView enclosingScrollView];
     NSView *view = [scrollView superview];
-    XFunnyImageView *imageView = [self getImageView:view];
+    NSImageView *imageView = [self getImageViewFromParentView:view];
+    XFunnyBackgroundView *backgroundView = [self getBackgroundViewFromaParentView:view];
     if (imageView) {
         // remove image
         [_currentTextView setBackgroundColor:_originalColor];
         [imageView removeFromSuperview];
+        [backgroundView removeFromSuperview];
     }
 
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    [userDefaults removeObjectForKey:kUserDefaultsKeyImagePath];
-    _image = nil;
+    [self removeUserDefaults];
+    
+    if (_image) {
+        [_image release];
+        _image = nil;
+    }
+    _position = 0;
+    _opacity = 1;
     [menuItem setState:NSOffState];
 }
 
 // selection image file
 - (void)enableBackgroundImage:(NSMenuItem *)menuItem
 {
-    NSOpenPanel *openPanel = [NSOpenPanel openPanel];
-    NSArray *fileTypes = [[NSArray alloc] initWithObjects:@"png", @"jpg", @"jpeg", nil];
+    
+    if (!_preferenceWindow) {
+        _preferenceWindow = [[PreferenceWindowController alloc] initWithWindowNibName:@"PreferenceWindowController"];
+        _preferenceWindow.delegate = self;
+    }
+    [_preferenceWindow.textFile setStringValue:@""];
+    [_preferenceWindow.comboPosition selectItemAtIndex:0];
+    [_preferenceWindow.sliderOpacity setIntValue:100];
+    [_preferenceWindow.labelOpacity setStringValue:@"100"];
+    
+    NSInteger result = [[NSApplication sharedApplication] runModalForWindow:[_preferenceWindow window]];
+    [[_preferenceWindow window] orderOut:self];
+    
+    if (result == 0) {
+        [menuItem setState:NSOnState];
+        
+        // save userdefaults
+        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+        [userDefaults setObject:_preferenceWindow.textFile.stringValue forKey:kUserDefaultsKeyImagePath];
+        [userDefaults setInteger:_position forKey:kUserDefaultsKeyImagePosition];
+        [userDefaults setFloat:_opacity forKey:kUserDefaultsKeyImageOpcity];
+        [userDefaults synchronize];
+    }
 
-    [openPanel setCanChooseDirectories:NO];
-    [openPanel setCanChooseFiles:YES];
-    [openPanel setAllowedFileTypes:fileTypes];
+}
 
-    [openPanel beginSheetModalForWindow:menuItem.view.window completionHandler:^(NSInteger resultCode){
-        if (resultCode == NSOKButton) {
-            NSURL *pathURL = [[openPanel URLs] objectAtIndex:0];
-            NSString *imagePath = [pathURL path];
-            NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-            [userDefaults setObject:imagePath forKey:kUserDefaultsKeyImagePath];
-            [userDefaults synchronize];
-            
-            _image = [[NSImage alloc] initWithContentsOfFile:imagePath];
+- (void)removeUserDefaults
+{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults removeObjectForKey:kUserDefaultsKeyImagePath];
+    [userDefaults removeObjectForKey:kUserDefaultsKeyImagePosition];
+    [userDefaults removeObjectForKey:kUserDefaultsKeyImageOpcity];
+    [userDefaults synchronize];
+    
+}
 
-            if (_currentTextView) {
-                // post notification
-                [[NSNotificationCenter defaultCenter] postNotificationName:NSViewFrameDidChangeNotification object:_currentTextView];
-            }
+- (void)selectedImageFile:(NSString *)imagePath
+{
+    _image = [[NSImage alloc] initWithContentsOfFile:imagePath];
+    if (_currentTextView) {
+        // post notification
+        [[NSNotificationCenter defaultCenter] postNotificationName:NSViewFrameDidChangeNotification object:_currentTextView];
+    }
+}
 
-            [menuItem setState:NSOnState];
-
-        }
-    }];
-
+- (void)selectedPosition:(NSImageAlignment)position
+{
+    _position = position;
+    NSImageView *imageView = [self getImageViewFromTextView];
+    if (imageView) {
+        imageView.imageAlignment = position;
+    }
+    
+}
+- (void)selectedOpacity:(float)opacity
+{
+    _opacity = opacity;
+    NSImageView *imageView = [self getImageViewFromTextView];
+    if (imageView) {
+        imageView.alphaValue = opacity;
+    }
 }
 
 - (void)dealloc

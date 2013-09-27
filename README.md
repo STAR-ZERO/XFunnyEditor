@@ -8,11 +8,17 @@ Xcode plugin to display an image on the background of the editor
 
 Build the XFunnyEditor target in the Xcode project and the plugin will automatically be installed in `~/Library/Application Support/Developer/Shared/Xcode/Plug-ins`. Relaunch Xcode.
 
-Select `XFunnyEditor` from `Edit` menu and select image file
-
 ## Uninstall
 
 Delete the following directory: `~/Library/Application Support/Developer/Shared/Xcode/Plug-ins/XFunnyEditor.xcplugin`.
+
+## Usage
+
+To Start XFunnyEditor setting screen, select `XFunnyEditor` from `Edit` menu.
+
+Please specify image file and transparency and position from setting screen.
+
+If you want to disable, please select the menu again.
 
 ## Support version
 
@@ -20,7 +26,8 @@ This plugin is developed in MaxOS 10.8 and Xcode 5.0
 
 ## Known Issues
 
-To the strange behavior when used in conjunction with XVim
+* To the strange behavior when used in conjunction with XVim
+* Crash By using the XFunnyEditor setting screen in the except source code editor
 
 ## License
 
