@@ -17,6 +17,7 @@
     NSImage *_image;
     NSUInteger _position;
     float _opacity;
+    BOOL _scaleFit;
     NSRect _sidebarRect;
     DVTSourceTextView *_currentTextView;
     NSColor *_originalColor;
@@ -25,6 +26,7 @@
 NSString * const kUserDefaultsKeyImagePath = @"XFunnyEditoryImagePath";
 NSString * const kUserDefaultsKeyImagePosition = @"XFunnyEditoryImagePosition";
 NSString * const kUserDefaultsKeyImageOpcity = @"XFunnyEditoryImageOpacity";
+NSString * const kUserDefaultsKeyImageScaleFit = @"XFunnyEditoryImageScaleFit";
 
 + (void)pluginDidLoad:(NSBundle *)plugin
 {
@@ -54,6 +56,7 @@ NSString * const kUserDefaultsKeyImageOpcity = @"XFunnyEditoryImageOpacity";
         
         _position = [userDefaults integerForKey:kUserDefaultsKeyImagePosition];
         _opacity = [userDefaults floatForKey:kUserDefaultsKeyImageOpcity];
+        _scaleFit = [userDefaults boolForKey:kUserDefaultsKeyImageScaleFit];
         
         if (_opacity == 0) {
             _opacity = 1;
@@ -138,6 +141,9 @@ NSString * const kUserDefaultsKeyImageOpcity = @"XFunnyEditoryImageOpacity";
             [imageView setImage:_image];
             imageView.alphaValue = _opacity;
             imageView.imageAlignment = _position;
+            if (_scaleFit) {
+                [imageView setImageScaling:NSScaleToFit];
+            }
             [view addSubview:imageView positioned:NSWindowBelow relativeTo:nil];
             [view addSubview:backgroundView positioned:NSWindowBelow relativeTo:nil];
         }
@@ -263,6 +269,7 @@ NSString * const kUserDefaultsKeyImageOpcity = @"XFunnyEditoryImageOpacity";
         [userDefaults setObject:_preferenceWindow.textFile.stringValue forKey:kUserDefaultsKeyImagePath];
         [userDefaults setInteger:_position forKey:kUserDefaultsKeyImagePosition];
         [userDefaults setFloat:_opacity forKey:kUserDefaultsKeyImageOpcity];
+        [userDefaults setBool:_scaleFit forKey:kUserDefaultsKeyImageScaleFit];
         [userDefaults synchronize];
     }
 
@@ -274,6 +281,7 @@ NSString * const kUserDefaultsKeyImageOpcity = @"XFunnyEditoryImageOpacity";
     [userDefaults removeObjectForKey:kUserDefaultsKeyImagePath];
     [userDefaults removeObjectForKey:kUserDefaultsKeyImagePosition];
     [userDefaults removeObjectForKey:kUserDefaultsKeyImageOpcity];
+    [userDefaults removeObjectForKey:kUserDefaultsKeyImageScaleFit];
     [userDefaults synchronize];
     
 }
@@ -302,6 +310,19 @@ NSString * const kUserDefaultsKeyImageOpcity = @"XFunnyEditoryImageOpacity";
     NSImageView *imageView = [self getImageViewFromTextView];
     if (imageView) {
         imageView.alphaValue = opacity;
+    }
+}
+
+- (void)selectedScaleFit:(BOOL)scaleFit
+{
+    _scaleFit = scaleFit;
+    NSImageView *imageView = [self getImageViewFromTextView];
+    if (imageView) {
+        if (scaleFit) {
+            [imageView setImageScaling:NSScaleToFit];
+        } else {
+            [imageView setImageScaling:NSScaleNone];
+        }
     }
 }
 

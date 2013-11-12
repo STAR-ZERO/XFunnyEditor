@@ -14,6 +14,7 @@
 - (void)selectedImageFile:(NSString *)imagePath;
 - (void)selectedPosition:(NSImageAlignment)position;
 - (void)selectedOpacity:(float)opacity;
+- (void)selectedScaleFit:(BOOL)scaleFit;
 @end
 
 @interface PreferenceWindowController : NSWindowController<NSWindowDelegate>
@@ -23,11 +24,13 @@
 @property (assign) IBOutlet NSComboBox *comboPosition;
 @property (assign) IBOutlet NSSlider *sliderOpacity;
 @property (assign) IBOutlet NSTextField *labelOpacity;
+@property (assign) IBOutlet NSButton *scaleFitButton;
+
 @property (nonatomic, assign) id<PreferenceDelegate> delegate;
 
 - (IBAction)clickFile:(id)sender;
 - (IBAction)changePosition:(id)sender;
 - (IBAction)changeSliderOpactiy:(id)sender;
-
+- (IBAction)changeScaleFit:(id)sender;
 
 @end

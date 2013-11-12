@@ -71,4 +71,16 @@
     [self.delegate selectedOpacity:opacity / 100.0];
 }
 
+- (IBAction)changeScaleFit:(id)sender {
+    BOOL scaleFit;
+    if ([self.scaleFitButton state] == NSOnState) {
+        scaleFit = YES;
+    }
+    else {
+        scaleFit = NO;
+    }
+    
+    [self.delegate selectedScaleFit:scaleFit];
+}
+
 @end
