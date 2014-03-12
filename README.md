@@ -6,7 +6,13 @@ Xcode plugin to display an image on the background of the editor
 
 ## Install
 
-Build the XFunnyEditor target in the Xcode project and the plugin will automatically be installed in `~/Library/Application Support/Developer/Shared/Xcode/Plug-ins`. Relaunch Xcode.
+### Manual
+
+Build the XFunnyEditor target in the Xcode project and the plugin will automatically be installed in `~/Library/Application Support/Developer/Shared/Xcode/Plug-ins`. Restart Xcode.
+
+### Alcatraz
+
+Install from [Alcatraz](https://github.com/supermarin/Alcatraz) package manager. Restart Xcode.
 
 ## Uninstall
 
