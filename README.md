@@ -32,7 +32,6 @@ This plugin is developed in MaxOS 10.8 and Xcode 5.0
 
 ## Known Issues :(
 
-* To the strange behavior when used in conjunction with XVim.
 * Crash By using the XFunnyEditor setting screen in the except source code editor.
 * Occasional crash when you select the menu.
 

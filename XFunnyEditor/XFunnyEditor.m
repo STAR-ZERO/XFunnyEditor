@@ -21,12 +21,16 @@
     NSRect _sidebarRect;
     DVTSourceTextView *_currentTextView;
     NSColor *_originalColor;
+
+    BOOL _isXVimInstalled;
 }
 
 NSString * const kUserDefaultsKeyImagePath = @"XFunnyEditoryImagePath";
 NSString * const kUserDefaultsKeyImagePosition = @"XFunnyEditoryImagePosition";
 NSString * const kUserDefaultsKeyImageOpcity = @"XFunnyEditoryImageOpacity";
 NSString * const kUserDefaultsKeyImageScaleFit = @"XFunnyEditoryImageScaleFit";
+NSString * const kXVimInstallPath = @"Library/Application Support/Developer/Shared/Xcode/Plug-ins/XVim.xcplugin";
+CGFloat const kXVimCommandLineHeight = 18.0;
 
 + (void)pluginDidLoad:(NSBundle *)plugin
 {
@@ -57,6 +61,7 @@ NSString * const kUserDefaultsKeyImageScaleFit = @"XFunnyEditoryImageScaleFit";
         _position = [userDefaults integerForKey:kUserDefaultsKeyImagePosition];
         _opacity = [userDefaults floatForKey:kUserDefaultsKeyImageOpcity];
         _scaleFit = [userDefaults boolForKey:kUserDefaultsKeyImageScaleFit];
+        _isXVimInstalled = [self isXVimInstalled];
         
         if (_opacity == 0) {
             _opacity = 1;
@@ -195,10 +200,17 @@ NSString * const kUserDefaultsKeyImageScaleFit = @"XFunnyEditoryImageScaleFit";
 
 - (NSRect)getImageViewFrame:(NSView *)scrollView
 {
+    CGFloat height = _sidebarRect.size.height;
+    CGFloat y = 0;
+    if (_isXVimInstalled) {
+        height -= kXVimCommandLineHeight;
+        y += kXVimCommandLineHeight;
+    }
+
     return NSMakeRect(_sidebarRect.size.width,
-                      0,
+                      y,
                       scrollView.bounds.size.width - _sidebarRect.size.width,
-                      _sidebarRect.size.height);
+                      height);
 }
 
 - (void)setFrameImageView:(NSImageView *)imageView backgroundView:(XFunnyBackgroundView *)backgroundView scrollView:(DVTSourceTextScrollView *)scrollView
@@ -206,6 +218,13 @@ NSString * const kUserDefaultsKeyImageScaleFit = @"XFunnyEditoryImageScaleFit";
     if (imageView && backgroundView) {
         [imageView setFrame:[self getImageViewFrame:scrollView]];
         [backgroundView setFrame:[self getImageViewFrame:scrollView]];
+        if (_isXVimInstalled) {
+            CGRect scrollViewFrame = scrollView.frame;
+            [scrollView setFrame:CGRectMake(scrollViewFrame.origin.x,
+                                            kXVimCommandLineHeight,
+                                            scrollViewFrame.size.width,
+                                            scrollViewFrame.size.height)];
+        }
     }
 }
 
@@ -324,6 +343,14 @@ NSString * const kUserDefaultsKeyImageScaleFit = @"XFunnyEditoryImageScaleFit";
             [imageView setImageScaling:NSScaleNone];
         }
     }
+}
+
+- (BOOL)isXVimInstalled
+{
+    NSString *pluginsInstallPath = [NSHomeDirectory() stringByAppendingPathComponent:kXVimInstallPath];
+    NSFileManager *fileManager = [[[NSFileManager alloc] init] autorelease];
+
+    return [fileManager fileExistsAtPath:pluginsInstallPath];
 }
 
 - (void)dealloc
