@@ -23,6 +23,7 @@
     NSColor *_originalColor;
 
     BOOL _isXVimInstalled;
+    CGFloat _editorViewHeight;
 }
 
 NSString * const kUserDefaultsKeyImagePath = @"XFunnyEditoryImagePath";
@@ -138,6 +139,11 @@ CGFloat const kXVimCommandLineHeight = 18.0;
             [scrollView setDrawsBackground:NO];
             [textView setBackgroundColor:[NSColor clearColor]];
 
+            _editorViewHeight = view.frame.size.height;
+            if (_isXVimInstalled) {
+                _editorViewHeight -= kXVimCommandLineHeight;
+            }
+
             // create ImageView
             imageView = [[[NSImageView alloc] initWithFrame:[self getImageViewFrame:scrollView]] autorelease];
             
@@ -160,6 +166,11 @@ CGFloat const kXVimCommandLineHeight = 18.0;
 
         NSImageView *imageView = [self getImageViewFromParentView:view];
         XFunnyBackgroundView *backgroundView = [self getBackgroundViewFromaParentView:view];
+
+        _editorViewHeight = view.frame.size.height;
+        if (_isXVimInstalled) {
+            _editorViewHeight -= kXVimCommandLineHeight;
+        }
 
         // set frame
         [self setFrameImageView:imageView backgroundView:backgroundView scrollView:scrollView];
@@ -200,17 +211,15 @@ CGFloat const kXVimCommandLineHeight = 18.0;
 
 - (NSRect)getImageViewFrame:(NSView *)scrollView
 {
-    CGFloat height = _sidebarRect.size.height;
     CGFloat y = 0;
     if (_isXVimInstalled) {
-        height -= kXVimCommandLineHeight;
         y += kXVimCommandLineHeight;
     }
 
     return NSMakeRect(_sidebarRect.size.width,
                       y,
                       scrollView.bounds.size.width - _sidebarRect.size.width,
-                      height);
+                      _editorViewHeight);
 }
 
 - (void)setFrameImageView:(NSImageView *)imageView backgroundView:(XFunnyBackgroundView *)backgroundView scrollView:(DVTSourceTextScrollView *)scrollView
@@ -223,7 +232,7 @@ CGFloat const kXVimCommandLineHeight = 18.0;
             [scrollView setFrame:CGRectMake(scrollViewFrame.origin.x,
                                             kXVimCommandLineHeight,
                                             scrollViewFrame.size.width,
-                                            scrollViewFrame.size.height)];
+                                            _editorViewHeight)];
         }
     }
 }
