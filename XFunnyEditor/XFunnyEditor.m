@@ -119,6 +119,11 @@ CGFloat const kXVimCommandLineHeight = 18.0;
     if ([[notification object] isKindOfClass:[DVTSourceTextView class]]) {
         DVTSourceTextView *textView = (DVTSourceTextView *)[notification object];
         DVTSourceTextScrollView *scrollView = (DVTSourceTextScrollView *)[textView enclosingScrollView];
+
+        if (![self isSourceTextView:scrollView]) {
+            return;
+        }
+
         NSView *view = [scrollView superview];
         if (view) {
             if (NSEqualRects(_sidebarRect, NSZeroRect)) {
@@ -162,6 +167,11 @@ CGFloat const kXVimCommandLineHeight = 18.0;
     } else if ([[notification object] isKindOfClass:[DVTSourceTextScrollView class]]) {
         // resize editor
         DVTSourceTextScrollView *scrollView = [notification object];
+
+        if (![self isSourceTextView:scrollView]) {
+            return;
+        }
+
         NSView *view = [scrollView superview];
 
         NSImageView *imageView = [self getImageViewFromParentView:view];
@@ -227,6 +237,7 @@ CGFloat const kXVimCommandLineHeight = 18.0;
     if (imageView && backgroundView) {
         [imageView setFrame:[self getImageViewFrame:scrollView]];
         [backgroundView setFrame:[self getImageViewFrame:scrollView]];
+
         if (_isXVimInstalled) {
             CGRect scrollViewFrame = scrollView.frame;
             [scrollView setFrame:CGRectMake(scrollViewFrame.origin.x,
@@ -360,6 +371,12 @@ CGFloat const kXVimCommandLineHeight = 18.0;
     NSFileManager *fileManager = [[[NSFileManager alloc] init] autorelease];
 
     return [fileManager fileExistsAtPath:pluginsInstallPath];
+}
+
+- (BOOL)isSourceTextView:(NSView *)scrollView
+{
+    NSString *superViewClass = NSStringFromClass([[scrollView superview] class]);
+    return [superViewClass isEqualToString:@"IDESourceCodeEditorContainerView"];
 }
 
 - (void)dealloc
