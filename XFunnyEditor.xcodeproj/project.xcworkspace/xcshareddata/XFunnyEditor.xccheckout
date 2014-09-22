@@ -10,29 +10,29 @@
 	<string>XFunnyEditor</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>648F5D32-AC07-4FCC-A1F0-17DD04A4B81F</key>
+		<key>6009380AEE374457373B20668826619AD46220C5</key>
 		<string>https://github.com/STAR-ZERO/XFunnyEditor</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>XFunnyEditor.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>648F5D32-AC07-4FCC-A1F0-17DD04A4B81F</key>
+		<key>6009380AEE374457373B20668826619AD46220C5</key>
 		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/STAR-ZERO/XFunnyEditor</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>648F5D32-AC07-4FCC-A1F0-17DD04A4B81F</string>
+	<string>6009380AEE374457373B20668826619AD46220C5</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>648F5D32-AC07-4FCC-A1F0-17DD04A4B81F</string>
+			<string>6009380AEE374457373B20668826619AD46220C5</string>
 			<key>IDESourceControlWCCName</key>
 			<string>XFunnyEditor</string>
 		</dict>
