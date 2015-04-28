@@ -360,7 +360,7 @@ CGFloat const kXVimCommandLineHeight = 18.0;
         if (scaleFit) {
             [imageView setImageScaling:NSScaleToFit];
         } else {
-            [imageView setImageScaling:NSScaleNone];
+            [imageView setImageScaling:NSScaleProportionally];
         }
     }
 }
