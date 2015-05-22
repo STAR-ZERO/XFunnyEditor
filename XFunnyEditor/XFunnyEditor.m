@@ -47,6 +47,10 @@ CGFloat const kXVimCommandLineHeight = 18.0;
 {
     if (self = [super init]) {
 
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            [self createMenuItem];
+        }];
+        
         NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         NSString *imagePath = [userDefaults objectForKey:kUserDefaultsKeyImagePath];
         
@@ -68,24 +72,6 @@ CGFloat const kXVimCommandLineHeight = 18.0;
             _opacity = 1;
         }
         
-        // Sample Menu Item:
-        NSMenuItem *menuItem = [[NSApp mainMenu] itemWithTitle:@"Edit"];
-        if (menuItem) {
-            [[menuItem submenu] addItem:[NSMenuItem separatorItem]];
-            NSMenuItem *actionMenuItem = [[NSMenuItem alloc] initWithTitle:@"XFunnyEditor" action:@selector(doMenuAction:) keyEquivalent:@""];
-            [actionMenuItem setTarget:self];
-
-            if (_image) {
-                [actionMenuItem setState:NSOnState];
-            } else {
-                [actionMenuItem setState:NSOffState];
-            }
-
-            [[menuItem submenu] addItem:actionMenuItem];
-            [actionMenuItem release];
-        }
-
-
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(applicationDidFinishLaunching:)
                                                      name:NSApplicationDidFinishLaunchingNotification
@@ -245,6 +231,25 @@ CGFloat const kXVimCommandLineHeight = 18.0;
                                             scrollViewFrame.size.width,
                                             _editorViewHeight)];
         }
+    }
+}
+
+- (void)createMenuItem
+{
+    NSMenuItem *menuItem = [[NSApp mainMenu] itemWithTitle:@"Edit"];
+    if (menuItem) {
+        [[menuItem submenu] addItem:[NSMenuItem separatorItem]];
+        NSMenuItem *actionMenuItem = [[NSMenuItem alloc] initWithTitle:@"XFunnyEditor" action:@selector(doMenuAction:) keyEquivalent:@""];
+        [actionMenuItem setTarget:self];
+
+        if (_image) {
+            [actionMenuItem setState:NSOnState];
+        } else {
+            [actionMenuItem setState:NSOffState];
+        }
+
+        [[menuItem submenu] addItem:actionMenuItem];
+        [actionMenuItem release];
     }
 }
 
